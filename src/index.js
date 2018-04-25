@@ -32,10 +32,11 @@ import 'd3-selection-multi'; // this is used for object attributes
 
 // Drawing with data
 (function() {
-    const w = 200;
-    const h = 100;
+    const w = 300;
+    const h = 120;
     const padding = 2;
-    const dataset = [5, 10, 15, 20, 25];
+    const dataset = [5, 10, 15, 20, 25, 11];
+    const dataset2 = [5, 10, 15, 20, 25, 11, 22, 24, 7, 18, 6];
 
     const svg = d3.select(".d3dataDraw1")
         .append("svg")
@@ -64,15 +65,25 @@ import 'd3-selection-multi'; // this is used for object attributes
             "height": h
         });
     svgtwo.selectAll("rect")
-        .data(dataset)
+        .data(dataset2)
         .enter()
         .append("rect")
         .attrs({
-            x: (d, i) =>i * (w / dataset.length),
+            x: (d, i) =>i * (w / dataset2.length),
             y: (d) => h-(d*4),
-            width: w / dataset.length - padding,
+            width: w / dataset2.length - padding,
             height: (d) => d*4,
             fill: (d) => "rgb(" + [0 , d*10, 10].join(", ") + ")"
         });
-
+    svgtwo.selectAll("text")
+        .data(dataset2)
+        .enter()
+        .append("text")
+        .text((d) => d)
+        .attrs({
+            "text-anchor": "middle",
+            x: (d, i) => (i * w/dataset2.length + (w/dataset2.length - padding) /2),
+            y: (d) => h - (d*4)+14,
+            fill: "#ffffff"
+        })
 })();
