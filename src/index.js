@@ -147,3 +147,71 @@ import 'd3-selection-multi'; // this is used for object attributes
         })
 
 })();
+
+// building a scatterplot
+(function () {
+//    d3dataDrawScatterplot1
+    const w = 400;
+    const h = 350;
+    const monthlySales = [
+        {"month": 10, "sales": 100},
+        {"month": 20, "sales": 130},
+        {"month": 30, "sales": 250},
+        {"month": 40, "sales": 300},
+        {"month": 50, "sales": 265},
+        {"month": 60, "sales": 225},
+        {"month": 70, "sales": 180},
+        {"month": 80, "sales": 120},
+        {"month": 90, "sales": 145},
+        {"month": 100, "sales": 130}
+    ];
+
+    const svg = d3.select(".d3dataDrawScatterplot1").append("svg").attrs({width: w, height: h});
+
+//    add dots
+    svg.selectAll("circle")
+        .data(monthlySales)
+        .enter()
+        .append("circle")
+        .attrs({
+            cx: (d) => d.month*3,
+            cy: (d) => h-d.sales,
+            r: 5,
+            "fill": (d) => salesKPI(d.sales)
+        })
+
+//    adding labels
+    svg.selectAll("text")
+        .data(monthlySales)
+        .enter()
+        .append("text")
+        .text((d) => showMinMax(monthlySales, 'sales', d.sales, 'minmax')) //minmax or all
+        .attrs({
+            x: d => d.month*3 - 25,
+            y: d => h - d.sales,
+            "font-size": "12px",
+            "font-family": "sans-serif",
+            "fill": "blue",
+            "text-anchor": "start",
+            "dy": ".35em",
+        })
+
+//    KPI color
+    function salesKPI(d) {
+        return d >= 250 ? "green" : "red"
+    }
+
+// returns a min or a max or all values, depending on the type we pass to it
+    function showMinMax(dataSet, col, val, type) {
+        const max=d3.max(dataSet, (d) => d[col]);
+        const min=d3.min(dataSet, (d) => d[col]);
+        if(type==='minmax' && (val=== max || val ===min )) {
+            return val;
+        } else {
+            if (type === 'all') {
+                return val;
+            }
+        }
+    }
+
+})();
