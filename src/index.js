@@ -1,5 +1,6 @@
 import './index.css';
 import * as d3 from "d3";
+import 'd3-selection-multi'; // this is used for object attributes
 
 // Drawing shapes
 (function() {
@@ -54,5 +55,24 @@ import * as d3 from "d3";
             .attr("width", w / dataset.length - padding) // can use also just calculus and this applies for all bars
             .attr("height", (d) => d*4) // the height of the drawing is set to the data in the data set
             .style("fill", (d) => "rgb(" + [Math.floor(250-Math.random()*d*5), Math.floor(255-Math.random()*d*10), Math.floor(255-Math.random()*d*10)].join(", ") + ")")
+
+    // using multiple attributes as an object
+    const svgtwo = d3.select(".d3dataDrawTwo")
+        .append("svg")
+        .attrs({
+            "width": w,
+            "height": h
+        });
+    svgtwo.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attrs({
+            x: (d, i) =>i * (w / dataset.length),
+            y: (d) => h-(d*4),
+            width: w / dataset.length - padding,
+            height: (d) => d*4,
+            fill: (d) => "rgb(" + [0 , d*10, 10].join(", ") + ")"
+        });
 
 })();

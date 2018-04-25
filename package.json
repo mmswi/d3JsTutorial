@@ -14,6 +14,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "d3": "^5.1.0"
+    "d3": "^5.1.0",
+    "d3-selection-multi": "^1.0.1"
   }
 }
