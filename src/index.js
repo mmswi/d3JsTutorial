@@ -1,6 +1,16 @@
 import './index.css';
 import * as d3 from "d3";
 import 'd3-selection-multi'; // this is used for object attributes
+import 'd3-scale';
+
+/*
+*  !!!! IMPORTANT !!!!!
+*   DISPLAY SHOWS FROM TOP LEFT TO BOTTOM RIHGHT
+*   Y-SCALE: [0, 0] is TOP LEFT
+*   Y-SCALE: [height of svg, 0] is BOTTOM LEFT
+*   X-SCALE: [0, width of svg] is TOP RIGHT
+*   X-SCALE: [width of svg, width of svg] is BOTTOM RIGHT
+* */
 
 // Drawing shapes
 (function() {
@@ -343,6 +353,71 @@ import 'd3-selection-multi'; // this is used for object attributes
         const lineFunc = d3.line()
             .x(d=>(d.month-20130001)/3.25)
             .y(d=>h-d.sales);
+
+        const svg = d3.select(htmlselector)
+            .append("svg")
+            .attrs({
+                "width": w,
+                "height": h
+            });
+        svg.append("path")
+            .attrs({
+                d: lineFunc(jsonData),
+                stroke: "purple",
+                "stroke-width": 2,
+                "fill": "none"
+            });
+    }
+
+    function showHeader(jsonData, htmlselector) {
+        d3.select(htmlselector).append("h4")
+            .text(jsonData.category + " Sales (2013)")
+    }
+
+})();
+
+// Scaling data
+(async function() {
+    const h = 100;
+    const w = 400;
+    const scale = d3.scaleLinear()
+        .domain([130, 350]) // the min and the max of a given array of values
+        .range([10, 100]); // the range of the display - 350 is equiv to 100 and 130 to 10, in our example
+    // values in between the domain ranges, are calculated as a range percentage
+    console.log(scale(200));
+
+    // msc -> monthly sales by category
+    // getting data from api
+    const msc = await d3.json('https://api.github.com/repos/bsullins/d3js-resources/contents/monthlySalesbyCategoryMultiple.json');
+    // using window.atob to decode base64 data
+    const decodedData = JSON.parse(window.atob(msc.content));
+    console.log(decodedData)
+    // builing a line and showing header for multiple categories
+    decodedData.contents.forEach((ds) => {
+        showHeader(ds, ".d3ScaleData1");
+        buildLineFromJSON(ds.monthlySales, ".d3ScaleData1");
+    });
+
+    function buildLineFromJSON(jsonData, htmlselector) {
+        const minMonth = d3.min(jsonData, d => d.month);
+        const maxMonth = d3.max(jsonData, d => d.month);
+
+        const xScale = d3.scaleLinear() // using xScale to show the months
+            .domain([minMonth, maxMonth]) // setting min and max from monthlySales
+            .range([0, w]); // max range set as svg width
+
+        const yScale = d3.scaleLinear() // using yScale to show the sales
+            .domain([
+                0,
+                d3.max(jsonData, d => d.sales)
+            ]) // setting min and max from monthlySales
+            .range([h, 0]); // max range set as svg height
+
+        const lineFunc = d3.line()
+            .x(d=> {
+                return xScale(d.month)
+            }) // replaced the functions with scales
+            .y(d=>yScale(d.sales));
 
         const svg = d3.select(htmlselector)
             .append("svg")
