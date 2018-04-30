@@ -225,13 +225,13 @@ import 'd3-selection-multi'; // this is used for object attributes
     // For reasons unknown, d3.csv when not finding the file, is returning the index.html line by line
     // Also, that html is the error
     // ms -> monthly sales
-    const ms = await d3.csv('./data/03/MonthlySales.csv')
+    const ms = await d3.csv('./data/03/MonthlySales.csv');
 
     // builing a line from csv
     buildLineFromCsv(ms, ".d3dataDrawCSV1");
 
     // building a table and showing totals
-    showMetrics(ms, ".d3dataDrawCSV2")
+    showMetrics(ms, ".d3dataDrawCSV2");
 
     function buildLineFromCsv(csvData, htmlselector) {
         const lineFunc = d3.line()
@@ -258,19 +258,17 @@ import 'd3-selection-multi'; // this is used for object attributes
         const t = d3.select(htmlselector).append("table");
 
         // get total
-        const salesTotal = csvData.reduce((acc, curr, index)=>{
+        const salesTotal = csvData.reduce((acc, curr)=>{
             // fun fact: multiplying by 1, converts string into number, if string is number
-            // ms is an array of objects, and acc at first run is the first elem of ms (object)
-            index===1 ? acc=(acc.sales)*1 : acc = acc
+            // ms is an array of objects, and acc will be first returned as 0
             return acc + (curr.sales)*1
-
-        })
+        },0);
 
         const salesAvg = salesTotal / csvData.length;
 
         const metrics = [];
-        metrics.push("Sales Total: " + salesTotal)
-        metrics.push("Sales Average: " + salesAvg.toFixed(2))
+        metrics.push("Sales Total: " + salesTotal);
+        metrics.push("Sales Average: " + salesAvg.toFixed(2));
 
         // adding the total to the table
         t.selectAll("tr")
@@ -296,6 +294,50 @@ import 'd3-selection-multi'; // this is used for object attributes
     buildLineFromJSON(ms, ".d3dataDrawJSON1");
     showHeader(msc, ".d3dataDrawJSON2");
     buildLineFromJSON(msc.monthlySales, ".d3dataDrawJSON2");
+
+    function buildLineFromJSON(jsonData, htmlselector) {
+        const lineFunc = d3.line()
+            .x(d=>(d.month-20130001)/3.25)
+            .y(d=>h-d.sales);
+
+        const svg = d3.select(htmlselector)
+            .append("svg")
+            .attrs({
+                "width": w,
+                "height": h
+            });
+        svg.append("path")
+            .attrs({
+                d: lineFunc(jsonData),
+                stroke: "purple",
+                "stroke-width": 2,
+                "fill": "none"
+            });
+    }
+
+    function showHeader(jsonData, htmlselector) {
+        d3.select(htmlselector).append("h4")
+            .text(jsonData.category + " Sales (2013)")
+    }
+
+})();
+
+// Working with data from apis
+(async function() {
+    const h = 100;
+    const w = 400;
+
+    // msc -> monthly sales by category
+    // getting data from api
+    const msc = await d3.json('https://api.github.com/repos/bsullins/d3js-resources/contents/monthlySalesbyCategoryMultiple.json');
+    // using window.atob to decode base64 data
+    const decodedData = JSON.parse(window.atob(msc.content));
+
+    // builing a line and showing header for multiple categories
+    decodedData.contents.forEach((ds) => {
+        showHeader(ds, ".d3apiDrawCSV1");
+        buildLineFromJSON(ds.monthlySales, ".d3apiDrawCSV1");
+    });
 
     function buildLineFromJSON(jsonData, htmlselector) {
         const lineFunc = d3.line()
