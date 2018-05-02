@@ -2,6 +2,7 @@ import './index.css';
 import * as d3 from "d3";
 import 'd3-selection-multi'; // this is used for object attributes
 import 'd3-scale';
+import 'd3-axis';
 
 /*
 *  !!!! IMPORTANT !!!!!
@@ -437,6 +438,104 @@ import 'd3-scale';
     function showHeader(jsonData, htmlselector) {
         d3.select(htmlselector).append("h4")
             .text(jsonData.category + " Sales (2013)")
+    }
+
+})();
+
+// Adding axis
+(async function() {
+    const h = 100;
+    const w = 300;
+    const padding = 20;
+    const scale = d3.scaleLinear()
+        .domain([130, 350]) // the min and the max of a given array of values
+        .range([10, 100]); // the range of the display - 350 is equiv to 100 and 130 to 10, in our example
+    // values in between the domain ranges, are calculated as a range percentage
+    console.log(scale(200));
+
+    // msc -> monthly sales by category
+    // getting data from api
+    const msc = await d3.json('https://api.github.com/repos/bsullins/d3js-resources/contents/monthlySalesbyCategoryMultiple.json');
+    // using window.atob to decode base64 data
+    const decodedData = JSON.parse(window.atob(msc.content));
+    console.log(decodedData)
+    // builing a line and showing header for multiple categories
+    decodedData.contents.forEach((ds) => {
+        showHeader(ds, ".d3AxisData1");
+        buildLineFromJSON(ds.monthlySales, ".d3AxisData1");
+    });
+
+    function buildLineFromJSON(jsonData, htmlselector) {
+        const minMonth = d3.min(jsonData, d => d.month);
+        const maxMonth = d3.max(jsonData, d => d.month);
+
+        // Note, in our example, the data is sorted properly
+        const minDate = getDate(jsonData[0]['month']);
+        const maxDate = getDate(jsonData[jsonData.length - 1]['month'])
+
+        const xScale = d3.scaleTime() // using xScale to show the months
+            .domain([minDate, maxDate]) // setting min and max from dates
+            .range([padding + 5, w - padding]) // max range set as svg width
+            .nice();
+
+        const yScale = d3.scaleLinear() // using yScale to show the sales
+            .domain([
+                0,
+                d3.max(jsonData, d => d.sales)
+            ]) // setting min and max from monthlySales
+            .range([h-10, 0]) // max range set as svg height
+            .nice();
+
+        const lineFunc = d3.line()
+            .x(d=> {
+                return xScale(getDate(d.month))
+            }) // replaced the functions with scales
+            .y(d=>yScale(d.sales));
+
+        const svg = d3.select(htmlselector)
+            .append("svg")
+            .attrs({
+                "width": w,
+                "height": h+padding
+            });
+        svg.append("path")
+            .attrs({
+                d: lineFunc(jsonData),
+                stroke: "purple",
+                "stroke-width": 2,
+                "fill": "none"
+            });
+
+        // ADDING AXIS
+        const yAxisGen = d3.axisLeft().scale(yScale).ticks(4);
+        const xAxisGen = d3.axisBottom().scale(xScale).tickFormat(d3.timeFormat("%b"));
+
+        const yAxis = svg.append("g").call(yAxisGen)
+            .attrs({
+                "class": "axis",
+                "transform": "translate(" + padding + ", 0)"
+            })
+
+        const xAxis = svg.append("g").call(xAxisGen)
+            .attrs({
+                "class": "axis",
+                "transform": "translate(0, " + (h-10) + ")"
+            })
+    }
+
+    function showHeader(jsonData, htmlselector) {
+        d3.select(htmlselector).append("h4")
+            .text(jsonData.category + " Sales (2013)")
+    }
+
+    function getDate(d) {
+        // 20131201
+        const strDate = new String(d);
+        const year = strDate.substr(0, 4);
+        const month = strDate.substr(4, 2) - 1; //zero base index
+        const day = strDate.substr(6, 2);
+
+        return new Date(year, month, day);
     }
 
 })();

@@ -6,3 +6,19 @@ body {
 .hidden {
   display: none;
 }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+}
+
+.d3AxisData1 {
+  padding-left: 10px;
+}
