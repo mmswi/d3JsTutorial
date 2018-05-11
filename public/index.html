@@ -71,11 +71,34 @@
   </div>
 
     <!-- Drawing with data from apis -->
-    <div>
+    <div class="hidden">
       <h3>Scaling data</h3>
       <div class="hidden d3ScaleData1"></div>
       <h3>Axis data</h3>
       <div class="d3AxisData1"></div>
     </div>
+
+  <div>
+    <h3>Adding filters</h3>
+    <div class="d3Cicrle1"></div>
+    <p>
+      Show labels
+      <select name="opts" id="label-option">
+        <option value="all">All</option>
+        <option value="minmax">Min/Max</option>
+        <option value="none">None</option>
+      </select>
+    </p>
+
+    <p>
+      Chose date range
+      <select name="opts" id="date-option">
+        <option value="12">Last Year</option>
+        <option value="6">Last 6/mo</option>
+        <option value="3">Last Quarter</option>
+      </select>
+    </p>
+    <div class="d3AxisData2"></div>
+  </div>
   </body>
 </html>

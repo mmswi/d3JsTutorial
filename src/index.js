@@ -458,7 +458,7 @@ import 'd3-axis';
     const msc = await d3.json('https://api.github.com/repos/bsullins/d3js-resources/contents/monthlySalesbyCategoryMultiple.json');
     // using window.atob to decode base64 data
     const decodedData = JSON.parse(window.atob(msc.content));
-    console.log(decodedData)
+    console.log(decodedData);
     // builing a line and showing header for multiple categories
     decodedData.contents.forEach((ds) => {
         showHeader(ds, ".d3AxisData1");
@@ -471,7 +471,7 @@ import 'd3-axis';
 
         // Note, in our example, the data is sorted properly
         const minDate = getDate(jsonData[0]['month']);
-        const maxDate = getDate(jsonData[jsonData.length - 1]['month'])
+        const maxDate = getDate(jsonData[jsonData.length - 1]['month']);
 
         const xScale = d3.scaleTime() // using xScale to show the months
             .domain([minDate, maxDate]) // setting min and max from dates
@@ -514,7 +514,7 @@ import 'd3-axis';
             .attrs({
                 "class": "axis",
                 "transform": "translate(" + padding + ", 0)"
-            })
+            });
 
         const xAxis = svg.append("g").call(xAxisGen)
             .attrs({
@@ -537,5 +537,235 @@ import 'd3-axis';
 
         return new Date(year, month, day);
     }
+})();
 
+// Adding axis
+(async function() {
+    const h = 100;
+    const w = 300;
+    const padding = 20;
+    const scale = d3.scaleLinear()
+        .domain([130, 350]) // the min and the max of a given array of values
+        .range([10, 100]); // the range of the display - 350 is equiv to 100 and 130 to 10, in our example
+    // values in between the domain ranges, are calculated as a range percentage
+
+    // msc -> monthly sales by category
+    // getting data from api
+    const msc = await d3.json('./data/03/MonthlySalesbyCategoryMultiple.json');
+    // builing a line and showing header for multiple categories
+    msc.contents.forEach((ds) => {
+        showHeader(ds, ".d3AxisData2");
+        buildLineFromJSON(ds, ".d3AxisData2");
+    });
+
+    // Add event listener
+    d3.select("#date-option")
+        .on("change", (d, i) => {
+            const mscData = Object.assign({}, msc)
+            const sel = d3.select("#date-option").node().value; // 12, 6, 3
+            mscData.contents.forEach((ds) => {
+                const data = Object.assign({}, ds)
+                data.monthlySales.splice(0, data.monthlySales.length - sel);
+                updateLineFromJSON(data, ".d3AxisData2"); // UPDATING THE LINE
+            });
+
+            console.log("msc.is: ", msc)
+            console.log("mscData.is: ", mscData)
+
+        });
+
+    function buildLineFromJSON(jsonData, htmlselector) {
+        const monthlySales = jsonData.monthlySales;
+
+        // Note, in our example, the data is sorted properly
+        const minDate = getDate(monthlySales[0]['month']);
+        const maxDate = getDate(monthlySales[monthlySales.length - 1]['month']);
+
+        const xScale = d3.scaleTime() // using xScale to show the months
+            .domain([minDate, maxDate]) // setting min and max from dates
+            .range([padding + 5, w - padding]) // max range set as svg width
+            .nice();
+
+        const yScale = d3.scaleLinear() // using yScale to show the sales
+            .domain([
+                0,
+                d3.max(monthlySales, d => d.sales)
+            ]) // setting min and max from monthlySales
+            .range([h-10, 0]) // max range set as svg height
+            .nice();
+
+        const lineFunc = d3.line()
+            .x(d=> {
+                return xScale(getDate(d.month))
+            }) // replaced the functions with scales
+            .y(d=>yScale(d.sales));
+
+        const svg = d3.select(htmlselector)
+            .append("svg")
+            .attrs({
+                "width": w,
+                "height": h+padding,
+                "id": "svg-"+jsonData.category
+            });
+        svg.append("path")
+            .attrs({
+                d: lineFunc(monthlySales),
+                stroke: "purple",
+                "stroke-width": 2,
+                "fill": "none",
+                "class": "path-" + jsonData.category
+            });
+
+        // ADDING AXIS
+        const yAxisGen = d3.axisLeft().scale(yScale).ticks(4);
+        const xAxisGen = d3.axisBottom().scale(xScale).tickFormat(d3.timeFormat("%b"));
+
+        const yAxis = svg.append("g").call(yAxisGen)
+            .attrs({
+                "class": "axis y-axis",
+                "transform": "translate(" + padding + ", 0)"
+            });
+
+        const xAxis = svg.append("g").call(xAxisGen)
+            .attrs({
+                "class": "axis x-axis",
+                "transform": "translate(0, " + (h-10) + ")"
+            })
+    }
+
+    function updateLineFromJSON(jsonData, htmlselector) {
+        const monthlySales = jsonData.monthlySales;
+
+        // Note, in our example, the data is sorted properly
+        const minDate = getDate(monthlySales[0]['month']);
+        const maxDate = getDate(monthlySales[monthlySales.length - 1]['month']);
+
+        const xScale = d3.scaleTime() // using xScale to show the months
+            .domain([minDate, maxDate]) // setting min and max from dates
+            .range([padding + 5, w - padding]) // max range set as svg width
+            .nice();
+
+        const yScale = d3.scaleLinear() // using yScale to show the sales
+            .domain([
+                0,
+                d3.max(monthlySales, d => d.sales)
+            ]) // setting min and max from monthlySales
+            .range([h-10, 0]) // max range set as svg height
+            .nice();
+
+        const lineFunc = d3.line()
+            .x(d=> {
+                return xScale(getDate(d.month))
+            }) // replaced the functions with scales
+            .y(d=>yScale(d.sales));
+
+        const svg = d3.select(htmlselector)
+            .select("#svg-"+jsonData.category);
+
+        svg.selectAll(".path-"+jsonData.category)
+            .attrs({
+                d: lineFunc(monthlySales)
+            });
+
+        // ADDING AXIS
+        const yAxisGen = d3.axisLeft().scale(yScale).ticks(4);
+        const xAxisGen = d3.axisBottom().scale(xScale).tickFormat(d3.timeFormat("%b"));
+
+        // redrawing the axis
+        const yAxis = svg.selectAll("g.y-axis").call(yAxisGen);
+
+        const xAxis = svg.selectAll("g.x-axis").call(xAxisGen);
+    }
+
+    function showHeader(jsonData, htmlselector) {
+        d3.select(htmlselector).append("h4")
+            .text(jsonData.category + " Sales (2013)")
+    }
+
+    function getDate(d) {
+        // 20131201
+        const strDate = new String(d);
+        const year = strDate.substr(0, 4);
+        const month = strDate.substr(4, 2) - 1; //zero base index
+        const day = strDate.substr(6, 2);
+
+        return new Date(year, month, day);
+    }
+})();
+
+// Adding interactivity / event emmiters
+(function () {
+    const h = 350;
+    const w = 400;
+
+    const monthlySales = [
+        {"month":10, "sales":100},
+        {"month":20, "sales":130},
+        {"month":30, "sales":250},
+        {"month":40, "sales":300},
+        {"month":50, "sales":265},
+        {"month":60, "sales":225},
+        {"month":70, "sales":180},
+        {"month":80, "sales":120},
+        {"month":90, "sales":145},
+        {"month":100, "sales":130}
+    ];
+
+    //KPI color
+    function salesKPI (d) {
+        if (d>=250) { return "#33CC66"; } else
+        if (d<250) { return "#666666"; }
+    }
+
+    //create our SVG
+    const svg = d3.select(".d3Cicrle1").append("svg").attrs({ width:w, height: h});
+
+
+    //function for showing labels
+    function showMinMax(ds, col, val, type){
+        const max = d3.max(ds, d => d[col] );
+        const min = d3.min(ds, d => d[col] );
+
+        if (type==='minmax' && (val === max || val === min)) {
+            return val;
+        } else if (type==='all') {
+            return val;
+        }
+
+    }
+    //add dots
+    svg.selectAll("circle")
+        .data(monthlySales)
+        .enter()
+        .append("circle")
+        .attrs({
+            cx: function(d){ return d.month*3; },
+            cy: function(d){ return h-d.sales; },
+            r:  5,
+            "fill": function(d){ return salesKPI(d.sales); }
+        });
+
+    svg.selectAll("text")
+        .data(monthlySales)
+        .enter()
+        .append("text")
+        .text(function(d){ return showMinMax(monthlySales, 'sales', d.sales, 'minmax'); })
+        .attrs({
+            x: function(d){ return (d.month*3)-25; },
+            y: function(d){ return h-d.sales; },
+            "font-size": "12px",
+            "font-family": "sans-serif",
+            "fill": "#666666",
+            "text-anchor": "start"
+        });
+
+    //  Adding an event listener
+    d3.select("#label-option")
+        .on("change", d => {
+            const sel = d3.select("#label-option").node().value;
+
+            svg.selectAll("text")
+                .data(monthlySales)
+                .text(d => showMinMax(monthlySales, "sales", d.sales, sel)) // sel is dinamic
+        })
 })();
