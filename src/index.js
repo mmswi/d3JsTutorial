@@ -661,6 +661,9 @@ import 'd3-axis';
             .select("#svg-"+jsonData.category);
 
         svg.selectAll(".path-"+jsonData.category)
+            .transition()
+            .duration(1000)
+            .ease(d3.easeBounce)
             .attrs({
                 d: lineFunc(monthlySales)
             });
