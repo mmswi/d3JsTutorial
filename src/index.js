@@ -561,16 +561,14 @@ import 'd3-axis';
     // Add event listener
     d3.select("#date-option")
         .on("change", (d, i) => {
-            const mscData = Object.assign({}, msc)
+            // using json deep copy
+            const mscDataString = JSON.stringify(msc);
+            const mscData = JSON.parse(mscDataString);
             const sel = d3.select("#date-option").node().value; // 12, 6, 3
             mscData.contents.forEach((ds) => {
-                const data = Object.assign({}, ds)
-                data.monthlySales.splice(0, data.monthlySales.length - sel);
-                updateLineFromJSON(data, ".d3AxisData2"); // UPDATING THE LINE
+                ds.monthlySales.splice(0, ds.monthlySales.length - sel);
+                updateLineFromJSON(ds, ".d3AxisData2"); // UPDATING THE LINE
             });
-
-            console.log("msc.is: ", msc)
-            console.log("mscData.is: ", mscData)
 
         });
 
@@ -669,7 +667,10 @@ import 'd3-axis';
 
         // ADDING AXIS
         const yAxisGen = d3.axisLeft().scale(yScale).ticks(4);
-        const xAxisGen = d3.axisBottom().scale(xScale).tickFormat(d3.timeFormat("%b"));
+        const xAxisGen = d3.axisBottom()
+                            .scale(xScale)
+                            .tickFormat(d3.timeFormat("%b"))
+                            .ticks(monthlySales.length - 1);
 
         // redrawing the axis
         const yAxis = svg.selectAll("g.y-axis").call(yAxisGen);
