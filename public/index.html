@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
@@ -20,85 +20,89 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>d3 js tutorial</title>
-  </head>
-  <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+</head>
+<body>
+<noscript>
+    You need to enable JavaScript to run this app.
+</noscript>
+<div id="root"></div>
+<!--
+  This HTML file is a template.
+  If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+  You can add webfonts, meta tags, or analytics to this file.
+  The build step will place the bundled scripts into the <body> tag.
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-    <!-- Drawing some shapes -->
-    <div class="hidden">
-      <h3>Some shapes</h3>
-      <div class="d3bar1"></div>
-      <div class="d3circle1"></div>
-      <div class="d3text1"></div>
-    </div>
+  To begin the development, run `npm start` or `yarn start`.
+  To create a production bundle, use `npm run build` or `yarn build`.
+-->
+<!-- Drawing some shapes -->
+<div class="hidden">
+    <h3>Some shapes</h3>
+    <div class="d3bar1"></div>
+    <div class="d3circle1"></div>
+    <div class="d3text1"></div>
+</div>
 
-    <!-- Drawing with data -->
-    <div class="hidden">
-      <h3>Drawing with data</h3>
-      <div class="d3dataDraw1"></div>
-      <div class="d3dataDrawTwo"></div>
-      <div class="d3dataDrawLineChart1"></div>
-      <div class="d3dataDrawScatterplot1"></div>
-    </div>
+<!-- Drawing with data -->
+<div class="hidden">
+    <h3>Drawing with data</h3>
+    <div class="d3dataDraw1"></div>
+    <div class="d3dataDrawTwo"></div>
+    <div class="d3dataDrawLineChart1"></div>
+    <div class="d3dataDrawScatterplot1"></div>
+</div>
 
-    <!-- Drawing with data from external sources -->
-    <div class="hidden">
-      <h3>Drawing with data from external sources</h3>
-      <h4>Drawing with data from csv</h4>
-      <div class="d3dataDrawCSV1"></div>
-      <div class="d3dataDrawCSV2"></div>
-      <h4>Drawing with data from json</h4>
-      <div class="d3dataDrawJSON1"></div>
-      <div class="d3dataDrawJSON2"></div>
-    </div>
+<!-- Drawing with data from external sources -->
+<div class="hidden">
+    <h3>Drawing with data from external sources</h3>
+    <h4>Drawing with data from csv</h4>
+    <div class="d3dataDrawCSV1"></div>
+    <div class="d3dataDrawCSV2"></div>
+    <h4>Drawing with data from json</h4>
+    <div class="d3dataDrawJSON1"></div>
+    <div class="d3dataDrawJSON2"></div>
+</div>
 
-    <!-- Drawing with data from apis -->
-  <div class="hidden">
+<!-- Drawing with data from apis -->
+<div class="hidden">
     <h3>Drawing with data from apis</h3>
     <div class="d3apiDrawCSV1"></div>
-  </div>
+</div>
 
-    <!-- Drawing with data from apis -->
-    <div class="hidden">
-      <h3>Scaling data</h3>
-      <div class="hidden d3ScaleData1"></div>
-      <h3>Axis data</h3>
-      <div class="d3AxisData1"></div>
-    </div>
+<!-- Drawing with data from apis -->
+<div class="hidden">
+    <h3>Scaling data</h3>
+    <div class="hidden d3ScaleData1"></div>
+    <h3>Axis data</h3>
+    <div class="d3AxisData1"></div>
+</div>
 
-  <div>
+<div class="">
     <h3>Adding filters</h3>
     <div class="d3Cicrle1"></div>
     <p>
-      Show labels
-      <select name="opts" id="label-option">
-        <option value="all">All</option>
-        <option value="minmax">Min/Max</option>
-        <option value="none">None</option>
-      </select>
+        Show labels
+        <select name="opts" id="label-option">
+            <option value="all">All</option>
+            <option value="minmax">Min/Max</option>
+            <option value="none">None</option>
+        </select>
     </p>
 
     <p>
-      Chose date range
-      <select name="opts" id="date-option">
-        <option value="12">Last Year</option>
-        <option value="6">Last 6/mo</option>
-        <option value="3">Last Quarter</option>
-      </select>
+        Chose date range
+        <select name="opts" id="date-option">
+            <option value="12">Last Year</option>
+            <option value="6">Last 6/mo</option>
+            <option value="3">Last Quarter</option>
+        </select>
     </p>
     <div class="d3AxisData2"></div>
-  </div>
-  </body>
+</div>
+<!-- Adding tooltips -->
+<div>
+    <div class="d3tooltips1"></div>
+</div>
+</body>
 </html>

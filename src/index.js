@@ -5,44 +5,44 @@ import 'd3-scale';
 import 'd3-axis';
 
 /*
-*  !!!! IMPORTANT !!!!!
-*   DISPLAY SHOWS FROM TOP LEFT TO BOTTOM RIHGHT
-*   Y-SCALE: [0, 0] is TOP LEFT
-*   Y-SCALE: [height of svg, 0] is BOTTOM LEFT
-*   X-SCALE: [0, width of svg] is TOP RIGHT
-*   X-SCALE: [width of svg, width of svg] is BOTTOM RIGHT
-* */
+ *  !!!! IMPORTANT !!!!!
+ *   DISPLAY SHOWS FROM TOP LEFT TO BOTTOM RIHGHT
+ *   Y-SCALE: [0, 0] is TOP LEFT
+ *   Y-SCALE: [height of svg, 0] is BOTTOM LEFT
+ *   X-SCALE: [0, width of svg] is TOP RIGHT
+ *   X-SCALE: [width of svg, width of svg] is BOTTOM RIGHT
+ * */
 
 // Drawing shapes
-(function() {
+(function () {
     d3.select(".d3bar1")
         .append("svg")
         .append("rect")
-            .attr("width", 50)
-            .attr("height", 100)
-            .style("fill", "blue");
+        .attr("width", 50)
+        .attr("height", 100)
+        .style("fill", "blue");
 
     d3.select(".d3circle1")
         .append("svg")
         .append("circle")
-            .attr("cx", 50)
-            .attr("cy", 25)
-            .attr("r", 25)
-            .style("fill", "blue");
+        .attr("cx", 50)
+        .attr("cy", 25)
+        .attr("r", 25)
+        .style("fill", "blue");
 
     d3.select(".d3text1")
         .append("svg")
-            .attr("width", 250)
-            .attr("height", 50)
+        .attr("width", 250)
+        .attr("height", 50)
         .append("text")
-            .text("my text val")
-            .attr("x", 0)
-            .attr("y", 25)
-            .style("fill", "red");
+        .text("my text val")
+        .attr("x", 0)
+        .attr("y", 25)
+        .style("fill", "red");
 })();
 
 // Drawing with data
-(function() {
+(function () {
     const w = 300;
     const h = 120;
     const padding = 2;
@@ -51,22 +51,22 @@ import 'd3-axis';
 
     const svg = d3.select(".d3dataDraw1")
         .append("svg")
-            .attr("width", w)
-            .attr("height", h)
+        .attr("width", w)
+        .attr("height", h);
 
     // creating rect shapes with the data
     svg.selectAll("rect") // aren't any rects on the page, will use enter() to create
         .data(dataset) // this will draw 5 rectangles (5 vals in array)
         .enter()
         .append("rect")
-            .attr("x", (d, i) =>i * (w / dataset.length)) //i is the index - using this function to set the
-            // spacing of the bars, based on dataset and svg width
-            .attr("y", (d) => h-(d*4)) // drawing starts from top left (0) - downwards
-            // IMPORTANT! To have everything aligned bottom, you need to position the drawing
-            // to the height of the svg minus the actual height of the drawing, so it enters in the view
-            .attr("width", w / dataset.length - padding) // can use also just calculus and this applies for all bars
-            .attr("height", (d) => d*4) // the height of the drawing is set to the data in the data set
-            .style("fill", (d) => "rgb(" + [Math.floor(250-Math.random()*d*5), Math.floor(255-Math.random()*d*10), Math.floor(255-Math.random()*d*10)].join(", ") + ")")
+        .attr("x", (d, i) => i * (w / dataset.length)) //i is the index - using this function to set the
+        // spacing of the bars, based on dataset and svg width
+        .attr("y", (d) => h - (d * 4)) // drawing starts from top left (0) - downwards
+        // IMPORTANT! To have everything aligned bottom, you need to position the drawing
+        // to the height of the svg minus the actual height of the drawing, so it enters in the view
+        .attr("width", w / dataset.length - padding) // can use also just calculus and this applies for all bars
+        .attr("height", (d) => d * 4) // the height of the drawing is set to the data in the data set
+        .style("fill", (d) => "rgb(" + [Math.floor(250 - Math.random() * d * 5), Math.floor(255 - Math.random() * d * 10), Math.floor(255 - Math.random() * d * 10)].join(", ") + ")");
 
     // using multiple attributes as an object
     const svgtwo = d3.select(".d3dataDrawTwo")
@@ -80,11 +80,11 @@ import 'd3-axis';
         .enter()
         .append("rect")
         .attrs({
-            x: (d, i) =>i * (w / dataset2.length),
-            y: (d) => h-(d*4),
+            x: (d, i) => i * (w / dataset2.length),
+            y: (d) => h - (d * 4),
             width: w / dataset2.length - padding,
-            height: (d) => d*4,
-            fill: (d) => "rgb(" + [0 , d*10, 10].join(", ") + ")"
+            height: (d) => d * 4,
+            fill: (d) => "rgb(" + [0, d * 10, 10].join(", ") + ")"
         });
     svgtwo.selectAll("text")
         .data(dataset2)
@@ -93,8 +93,8 @@ import 'd3-axis';
         .text((d) => d)
         .attrs({
             "text-anchor": "middle",
-            x: (d, i) => (i * w/dataset2.length + (w/dataset2.length - padding) /2),
-            y: (d) => h - (d*4)+14,
+            x: (d, i) => (i * w / dataset2.length + (w / dataset2.length - padding) / 2),
+            y: (d) => h - (d * 4) + 14,
             fill: "#ffffff"
         })
 })();
@@ -120,8 +120,8 @@ import 'd3-axis';
 
     // line functions that will take an array of objects
     const lineFunc = d3.line()
-        .x(d=>d.month*3)
-        .y(d=>h-d.sales);
+        .x(d => d.month * 3)
+        .y(d => h - d.sales);
 
 
     const svg = d3.select(".d3dataDrawLineChart1")
@@ -138,7 +138,7 @@ import 'd3-axis';
             "stroke": "purple",
             "stroke-width": 2,
             "fill": "none"
-        })
+        });
 
     // adding labels
     svg.selectAll("text")
@@ -147,14 +147,14 @@ import 'd3-axis';
         .append("text")
         .text(d => d.sales)
         .attrs({
-            x: d => d.month*3-25,
-            y: d => h-d.sales,
+            x: d => d.month * 3 - 25,
+            y: d => h - d.sales,
             "font-size": "12px",
             "font-family": "sans-serif",
             "fill": "blue",
             "text-anchor": "start",
             "dy": ".35em",
-            "font-weight": (d, i) => i===0 || i===(monthlySales.length-1) ? "bold" : "normal"
+            "font-weight": (d, i) => i === 0 || i === (monthlySales.length - 1) ? "bold" : "normal"
         })
 
 })();
@@ -185,11 +185,11 @@ import 'd3-axis';
         .enter()
         .append("circle")
         .attrs({
-            cx: (d) => d.month*3,
-            cy: (d) => h-d.sales,
+            cx: (d) => d.month * 3,
+            cy: (d) => h - d.sales,
             r: 5,
             "fill": (d) => salesKPI(d.sales)
-        })
+        });
 
 //    adding labels
     svg.selectAll("text")
@@ -198,14 +198,14 @@ import 'd3-axis';
         .append("text")
         .text((d) => showMinMax(monthlySales, 'sales', d.sales, 'minmax')) //minmax or all
         .attrs({
-            x: d => d.month*3 - 25,
+            x: d => d.month * 3 - 25,
             y: d => h - d.sales,
             "font-size": "12px",
             "font-family": "sans-serif",
             "fill": "blue",
             "text-anchor": "start",
             "dy": ".35em",
-        })
+        });
 
 //    KPI color
     function salesKPI(d) {
@@ -214,9 +214,9 @@ import 'd3-axis';
 
 // returns a min or a max or all values, depending on the type we pass to it
     function showMinMax(dataSet, col, val, type) {
-        const max=d3.max(dataSet, (d) => d[col]);
-        const min=d3.min(dataSet, (d) => d[col]);
-        if(type==='minmax' && (val=== max || val ===min )) {
+        const max = d3.max(dataSet, (d) => d[col]);
+        const min = d3.min(dataSet, (d) => d[col]);
+        if (type === 'minmax' && (val === max || val === min )) {
             return val;
         } else {
             if (type === 'all') {
@@ -229,7 +229,7 @@ import 'd3-axis';
 
 // Working with data from external sources
 // Working with data from csv
-(async function() {
+(async function () {
     const h = 100;
     const w = 400;
     // const ds;
@@ -246,8 +246,8 @@ import 'd3-axis';
 
     function buildLineFromCsv(csvData, htmlselector) {
         const lineFunc = d3.line()
-            .x(d=>(d.month-20130001)/3.25)
-            .y(d=>h-d.sales);
+            .x(d => (d.month - 20130001) / 3.25)
+            .y(d => h - d.sales);
 
         const svg = d3.select(htmlselector)
             .append("svg")
@@ -269,11 +269,11 @@ import 'd3-axis';
         const t = d3.select(htmlselector).append("table");
 
         // get total
-        const salesTotal = csvData.reduce((acc, curr)=>{
+        const salesTotal = csvData.reduce((acc, curr) => {
             // fun fact: multiplying by 1, converts string into number, if string is number
             // ms is an array of objects, and acc will be first returned as 0
-            return acc + (curr.sales)*1
-        },0);
+            return acc + (curr.sales) * 1
+        }, 0);
 
         const salesAvg = salesTotal / csvData.length;
 
@@ -293,7 +293,7 @@ import 'd3-axis';
 })();
 
 // Working with data from JSON
-(async function() {
+(async function () {
     const h = 100;
     const w = 400;
 
@@ -308,8 +308,8 @@ import 'd3-axis';
 
     function buildLineFromJSON(jsonData, htmlselector) {
         const lineFunc = d3.line()
-            .x(d=>(d.month-20130001)/3.25)
-            .y(d=>h-d.sales);
+            .x(d => (d.month - 20130001) / 3.25)
+            .y(d => h - d.sales);
 
         const svg = d3.select(htmlselector)
             .append("svg")
@@ -334,7 +334,7 @@ import 'd3-axis';
 })();
 
 // Working with data from apis
-(async function() {
+(async function () {
     const h = 100;
     const w = 400;
 
@@ -352,8 +352,8 @@ import 'd3-axis';
 
     function buildLineFromJSON(jsonData, htmlselector) {
         const lineFunc = d3.line()
-            .x(d=>(d.month-20130001)/3.25)
-            .y(d=>h-d.sales);
+            .x(d => (d.month - 20130001) / 3.25)
+            .y(d => h - d.sales);
 
         const svg = d3.select(htmlselector)
             .append("svg")
@@ -378,7 +378,7 @@ import 'd3-axis';
 })();
 
 // Scaling data
-(async function() {
+(async function () {
     const h = 100;
     const w = 400;
     const scale = d3.scaleLinear()
@@ -415,10 +415,10 @@ import 'd3-axis';
             .range([h, 0]); // max range set as svg height
 
         const lineFunc = d3.line()
-            .x(d=> {
+            .x(d => {
                 return xScale(d.month)
             }) // replaced the functions with scales
-            .y(d=>yScale(d.sales));
+            .y(d => yScale(d.sales));
 
         const svg = d3.select(htmlselector)
             .append("svg")
@@ -443,7 +443,7 @@ import 'd3-axis';
 })();
 
 // Adding axis
-(async function() {
+(async function () {
     const h = 100;
     const w = 300;
     const padding = 20;
@@ -483,20 +483,20 @@ import 'd3-axis';
                 0,
                 d3.max(jsonData, d => d.sales)
             ]) // setting min and max from monthlySales
-            .range([h-10, 0]) // max range set as svg height
+            .range([h - 10, 0]) // max range set as svg height
             .nice();
 
         const lineFunc = d3.line()
-            .x(d=> {
+            .x(d => {
                 return xScale(getDate(d.month))
             }) // replaced the functions with scales
-            .y(d=>yScale(d.sales));
+            .y(d => yScale(d.sales));
 
         const svg = d3.select(htmlselector)
             .append("svg")
             .attrs({
                 "width": w,
-                "height": h+padding
+                "height": h + padding
             });
         svg.append("path")
             .attrs({
@@ -519,7 +519,7 @@ import 'd3-axis';
         const xAxis = svg.append("g").call(xAxisGen)
             .attrs({
                 "class": "axis",
-                "transform": "translate(0, " + (h-10) + ")"
+                "transform": "translate(0, " + (h - 10) + ")"
             })
     }
 
@@ -540,7 +540,7 @@ import 'd3-axis';
 })();
 
 // Adding axis
-(async function() {
+(async function () {
     const h = 100;
     const w = 300;
     const padding = 20;
@@ -589,21 +589,21 @@ import 'd3-axis';
                 0,
                 d3.max(monthlySales, d => d.sales)
             ]) // setting min and max from monthlySales
-            .range([h-10, 0]) // max range set as svg height
+            .range([h - 10, 0]) // max range set as svg height
             .nice();
 
         const lineFunc = d3.line()
-            .x(d=> {
+            .x(d => {
                 return xScale(getDate(d.month))
             }) // replaced the functions with scales
-            .y(d=>yScale(d.sales));
+            .y(d => yScale(d.sales));
 
         const svg = d3.select(htmlselector)
             .append("svg")
             .attrs({
                 "width": w,
-                "height": h+padding,
-                "id": "svg-"+jsonData.category
+                "height": h + padding,
+                "id": "svg-" + jsonData.category
             });
         svg.append("path")
             .attrs({
@@ -612,6 +612,40 @@ import 'd3-axis';
                 "stroke-width": 2,
                 "fill": "none",
                 "class": "path-" + jsonData.category
+            });
+
+        //adding a tooltip
+        const tooltip = d3.select(htmlselector)
+            .append("div")
+            .attrs({
+                "class": "tooltip",
+            })
+            .style("opacity", 0);
+
+        // adding circles on the line
+        svg.selectAll("circle")
+            .data(jsonData.monthlySales)
+            .enter()
+            .append("circle")
+            .attrs({
+                cx: d => xScale(getDate(d.month)),
+                cy: d => yScale(d.sales),
+                r: 4,
+                "fill": "#655",
+                class: "circle-"+jsonData.category
+            })
+            .on("mouseover", d => {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", .85);
+                tooltip.html("<strong>Sales $" + d.sales + "K</strong>")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px")
+            })
+            .on("mouseout", () => {
+                tooltip.transition()
+                    .duration(300)
+                    .style("opacity", 0);
             });
 
         // ADDING AXIS
@@ -627,7 +661,7 @@ import 'd3-axis';
         const xAxis = svg.append("g").call(xAxisGen)
             .attrs({
                 "class": "axis x-axis",
-                "transform": "translate(0, " + (h-10) + ")"
+                "transform": "translate(0, " + (h - 10) + ")"
             })
     }
 
@@ -648,19 +682,19 @@ import 'd3-axis';
                 0,
                 d3.max(monthlySales, d => d.sales)
             ]) // setting min and max from monthlySales
-            .range([h-10, 0]) // max range set as svg height
+            .range([h - 10, 0]) // max range set as svg height
             .nice();
 
         const lineFunc = d3.line()
-            .x(d=> {
+            .x(d => {
                 return xScale(getDate(d.month))
             }) // replaced the functions with scales
-            .y(d=>yScale(d.sales));
+            .y(d => yScale(d.sales));
 
         const svg = d3.select(htmlselector)
-            .select("#svg-"+jsonData.category);
+            .select("#svg-" + jsonData.category);
 
-        svg.selectAll(".path-"+jsonData.category)
+        svg.selectAll(".path-" + jsonData.category)
             .transition()
             .duration(1000)
             .ease(d3.easeBounce)
@@ -668,12 +702,40 @@ import 'd3-axis';
                 d: lineFunc(monthlySales)
             });
 
+        //adding a tooltip
+        const tooltip = d3.select(htmlselector)
+            .append("div")
+            .attrs({
+                "class": "tooltip",
+            })
+            .style("opacity", 0);
+
+        // adding circles on the line
+        svg.selectAll(".circle-"+jsonData.category)
+            .attrs({
+                cx: d => xScale(getDate(d.month)),
+                cy: d => yScale(d.sales)
+            })
+            .on("mouseover", d => {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", .85);
+                tooltip.html("<strong>Sales $" + d.sales + "K</strong>")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px")
+            })
+            .on("mouseout", () => {
+                tooltip.transition()
+                    .duration(300)
+                    .style("opacity", 0);
+            });
+
         // ADDING AXIS
         const yAxisGen = d3.axisLeft().scale(yScale).ticks(4);
         const xAxisGen = d3.axisBottom()
-                            .scale(xScale)
-                            .tickFormat(d3.timeFormat("%b"))
-                            .ticks(monthlySales.length - 1);
+            .scale(xScale)
+            .tickFormat(d3.timeFormat("%b"))
+            .ticks(monthlySales.length - 1);
 
         // redrawing the axis
         const yAxis = svg.selectAll("g.y-axis").call(yAxisGen);
@@ -703,60 +765,76 @@ import 'd3-axis';
     const w = 400;
 
     const monthlySales = [
-        {"month":10, "sales":100},
-        {"month":20, "sales":130},
-        {"month":30, "sales":250},
-        {"month":40, "sales":300},
-        {"month":50, "sales":265},
-        {"month":60, "sales":225},
-        {"month":70, "sales":180},
-        {"month":80, "sales":120},
-        {"month":90, "sales":145},
-        {"month":100, "sales":130}
+        {"month": 10, "sales": 100},
+        {"month": 20, "sales": 130},
+        {"month": 30, "sales": 250},
+        {"month": 40, "sales": 300},
+        {"month": 50, "sales": 265},
+        {"month": 60, "sales": 225},
+        {"month": 70, "sales": 180},
+        {"month": 80, "sales": 120},
+        {"month": 90, "sales": 145},
+        {"month": 100, "sales": 130}
     ];
 
     //KPI color
-    function salesKPI (d) {
-        if (d>=250) { return "#33CC66"; } else
-        if (d<250) { return "#666666"; }
+    function salesKPI(d) {
+        if (d >= 250) {
+            return "#33CC66";
+        } else if (d < 250) {
+            return "#666666";
+        }
     }
 
     //create our SVG
-    const svg = d3.select(".d3Cicrle1").append("svg").attrs({ width:w, height: h});
+    const svg = d3.select(".d3Cicrle1").append("svg").attrs({width: w, height: h});
 
 
     //function for showing labels
-    function showMinMax(ds, col, val, type){
-        const max = d3.max(ds, d => d[col] );
-        const min = d3.min(ds, d => d[col] );
+    function showMinMax(ds, col, val, type) {
+        const max = d3.max(ds, d => d[col]);
+        const min = d3.min(ds, d => d[col]);
 
-        if (type==='minmax' && (val === max || val === min)) {
+        if (type === 'minmax' && (val === max || val === min)) {
             return val;
-        } else if (type==='all') {
+        } else if (type === 'all') {
             return val;
         }
 
     }
+
     //add dots
     svg.selectAll("circle")
         .data(monthlySales)
         .enter()
         .append("circle")
         .attrs({
-            cx: function(d){ return d.month*3; },
-            cy: function(d){ return h-d.sales; },
-            r:  5,
-            "fill": function(d){ return salesKPI(d.sales); }
+            cx: function (d) {
+                return d.month * 3;
+            },
+            cy: function (d) {
+                return h - d.sales;
+            },
+            r: 5,
+            "fill": function (d) {
+                return salesKPI(d.sales);
+            }
         });
 
     svg.selectAll("text")
         .data(monthlySales)
         .enter()
         .append("text")
-        .text(function(d){ return showMinMax(monthlySales, 'sales', d.sales, 'minmax'); })
+        .text(function (d) {
+            return showMinMax(monthlySales, 'sales', d.sales, 'minmax');
+        })
         .attrs({
-            x: function(d){ return (d.month*3)-25; },
-            y: function(d){ return h-d.sales; },
+            x: function (d) {
+                return (d.month * 3) - 25;
+            },
+            y: function (d) {
+                return h - d.sales;
+            },
             "font-size": "12px",
             "font-family": "sans-serif",
             "fill": "#666666",
@@ -772,4 +850,43 @@ import 'd3-axis';
                 .data(monthlySales)
                 .text(d => showMinMax(monthlySales, "sales", d.sales, sel)) // sel is dinamic
         })
+})();
+
+(function () {
+    const w = 300;
+    const h = 120;
+    const padding = 2;
+    const dataset = [5, 10, 15, 20, 25, 11, 22, 24, 7, 18, 6];
+
+    const svg = d3.select(".d3tooltips1")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => i * (w / dataset.length))
+        .attr("y", (d) => h - (d * 4))
+        .attr("width", w / dataset.length - padding)
+        .attr("height", (d) => d * 4)
+        .style("fill", (d) => "rgb(" + [Math.floor(250 - Math.random() * d * 5), Math.floor(255 - Math.random() * d * 10), Math.floor(255 - Math.random() * d * 10)].join(", ") + ")")
+        .on("mouseover", function(d) {
+            svg.append("text")
+                .text(d)
+                .attrs({
+                    "text-anchor": "middle",
+                    x: parseFloat(d3.select(this).attr("x")) + parseFloat(d3.select(this).attr("width"))/2,
+                    y: parseFloat(d3.select(this).attr("y")) + 12,
+                    "font-family": "sans-serif",
+                    "font-size": 12,
+                    "fill": "#000",
+                    "class": "tooltip"
+                })
+        })
+        .on("mouseout", () => {
+            d3.select(".tooltip").remove()
+        })
+
 })();
