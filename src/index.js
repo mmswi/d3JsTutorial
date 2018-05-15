@@ -3,6 +3,8 @@ import * as d3 from "d3";
 import 'd3-selection-multi'; // this is used for object attributes
 import 'd3-scale';
 import 'd3-axis';
+import 'd3-geo';
+import * as project from 'd3-geo-projection';
 
 /*
  *  !!!! IMPORTANT !!!!!
@@ -887,6 +889,89 @@ import 'd3-axis';
         })
         .on("mouseout", () => {
             d3.select(".tooltip").remove()
+        })
+
+})();
+
+// drawing maps
+(async function () {
+    const w = 500;
+    const h = 300;
+
+    // const projection = project.geoCylindricalEqualArea(); // importet from d3-geo-projection
+    const projection = d3.geoAlbersUsa().scale([500]).translate([w/2, h/2]);
+    const path = d3.geoPath(projection);
+
+    const svg = d3.select(".d3mapdraw1").append("svg").attrs({
+        width: w,
+        height: h
+    });
+
+    // creating color scheme
+    const colors = d3.scaleLinear()
+                    .range(['#fee5d9','#fcbba1','#fc9272','#fb6a4a','#de2d26','#a50f15'])
+
+    const salesCsv = await d3.csv('./data/07/state-sales.csv');
+    const salesByCity = await d3.csv('./data/07/sales-by-city.csv');
+
+    colors.domain([
+        0, d3.max(salesCsv, d => d.sales)
+    ]);
+
+
+    // note: json has been converted downloaded from https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
+    // and converted here https://mygeodata.cloud/converter/
+    const usjson = await d3.json('./data/07/us.json');
+
+    for(let i=0; i<salesCsv.length; i++) {
+        const salesState = salesCsv[i].state;
+        const salesVal = parseFloat(salesCsv[i].sales);
+        for (let j=0; j<usjson.features.length; j++) {
+            const usState = usjson.features[j].properties.NAME;
+
+            if(salesState === usState) {
+                usjson.features[j].properties.value = salesVal;
+                break;
+            }
+        }
+    }
+
+    svg.selectAll("path")
+        .data(usjson.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .style("fill", d => {
+            // coloring the svg
+            const value = d.properties.value;
+
+            if(value) {
+                return colors(value);
+            } else {
+                return "#333"
+            }
+        });
+
+    // adding points on the map
+    svg.selectAll("circle")
+        .data(salesByCity)
+        .enter()
+        .append("circle")
+        .attrs({
+            cx: d => {
+                const theproj = projection([d.lon, d.lat])
+                if(theproj !== null) {
+                    return theproj[0]
+                }
+            },
+            cy: d => {
+                const theproj = projection([d.lon, d.lat])
+                if(theproj !== null) {
+                    return theproj[1]
+                }
+            },
+            r: d => Math.sqrt(parseInt(d.sales)*0.00015),
+            "fill": "green"
         })
 
 })();
